@@ -14,8 +14,8 @@ end DataMemory;
 
 architecture struc of DataMemory is 
 
-type vector_array is array (natural range <>) of std_logic_vector(n - 1 downto 0);
-signal w: vector_array(2**l - 1 downto 0);
+type vector_array is array (natural range <>) of std_logic_vector(n-1 downto 0);
+signal w: vector_array(2**l-1 downto 0);
 signal z: std_logic_vector(31 downto 0);
 
 
@@ -23,18 +23,19 @@ begin
 
 process(Clk, MemRead)
 variable i : natural;
-variable count : integer := 0;
+variable count:integer:=0;
 begin
    i := to_integer(unsigned(address));
 	if count = 0 then
-		w(0)<="00000101";
-		w(1)<="00000000";
-		w(2)<="00000000";
-		w(3)<="00000000";
-		w(4)<="00000100";
-		w(5)<="00000000";
-		w(6)<="00000000";
-		w(7)<="00000000";
+		w(4)<=x"00";
+		w(5)<=x"00";
+		w(6)<=x"00";
+		w(7)<=x"04";
+		w(8)<=x"00";
+		w(9)<=x"00";
+		w(10)<=x"00";
+		w(11)<=x"05";
+
 		count:=1;
 	end if;
 

@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+
+
 entity ALU1 is
 port(a,b, Binvert, Ainvert, setin:in std_logic;
 	CarryIn : in std_logic;

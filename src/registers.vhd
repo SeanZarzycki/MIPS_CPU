@@ -13,6 +13,9 @@ architecture structural of registers is
 
    constant zero : integer := 0;
    constant t0 : integer := 8;
+   constant s1 : integer := 17;
+   constant s2 : integer := 18;
+   constant s3 : integer := 19;
    constant s4 : integer := 20;
    constant s5 : integer := 21;
 
@@ -32,9 +35,9 @@ begin
       s_RR2 <= to_integer(unsigned(RR2));
       if (init) then
          RF(zero) <= std_logic_vector(to_unsigned(0, 32));
-         RF(t0) <= std_logic_vector(to_unsigned(0, 32));
-         RF(s4) <= std_logic_vector(to_unsigned(14, 32));
-         RF(s5) <= std_logic_vector(to_unsigned(5, 32));      
+         RF(t0) <= std_logic_vector(to_unsigned(4, 32));
+      	 RF(s2) <= std_logic_vector(to_unsigned(13, 32));
+	 RF(s3) <= std_logic_vector(to_unsigned(4, 32));
          init := false;
       end if;
       

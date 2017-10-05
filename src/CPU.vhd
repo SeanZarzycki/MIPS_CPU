@@ -1,10 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-
-
-
-
 entity CPU is
 port(clk:in std_logic; Overflow:out std_logic);
 end CPU;
@@ -24,14 +20,14 @@ signal ALUOp : std_logic_vector(1 downto 0);
    end component;
 
    component PC
-   port( clk 		: in std_logic;
-         AddressIn  : in std_logic_vector(31 downto 0);
-         AddressOut : out std_logic_vector(31 downto 0));
+   port(clk 		: in std_logic;
+        AddressIn  : in std_logic_vector(31 downto 0);
+        AddressOut : out std_logic_vector(31 downto 0));
    end component;
 
    component signextend
    port(x : in std_logic_vector(15 downto 0);
-        y : out std_logic_vector(31 downto 0));
+       y : out std_logic_vector(31 downto 0));
    end component;
 
    component registers

@@ -20,37 +20,38 @@ begin
 
 process(OpCode)
 begin
+
 	case OpCode is
 		when "000000" =>
-			RFormat <= '1';
-			lw <= '0';
-			sw <= '0';
-			beq <= '0';
-			jum <= '0';
+				RFormat <= '1';
+				lw <= '0';
+				sw <= '0';
+				beq <= '0';
+				jum <= '0';
 		when "100011" =>
-			RFormat <= '0';
-			lw <= '1';
-			sw <= '0';
-			beq <= '0';
-			jum <= '0';
+				RFormat <= '0';
+				lw <= '1';
+				sw <= '0';
+				beq <= '0';
+				jum <= '0';
 		when "101011" =>
-			RFormat <= '0';
-			lw <= '0';
-			sw <= '1';
-			beq <= '0';
-			jum <= '0';
+				RFormat <= '0';
+				lw <= '0';
+				sw <= '1';
+				beq <= '0';
+				jum <= '0';
 		when "000100" =>
-			RFormat <= '0';
-			lw <= '0';
-			sw <= '0';
-			beq <= '1';
-			jum <= '0';
+				RFormat <= '0';
+				lw <= '0';
+				sw <= '0';
+				beq <= '1';
+				jum <= '0';
 		when others =>
-			RFormat <= '0';
-			lw <= '0';
-			sw <= '0';
-			beq <= '0';
-			jum <= '1';
+				RFormat <= '0';
+				lw <= '0';
+				sw <= '0';
+				beq <= '0';
+				jum <= '1';
 
 	end case; 
 
