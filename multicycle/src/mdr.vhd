@@ -11,8 +11,11 @@ end MDR;
 architecture behavioral of MDR is
 signal reg : std_logic_vector(31 downto 0);
 begin
-	if rising_edge(clk) then
-		reg <= x;
-		y <= reg;
-	end if;
+	process(clk, x)
+	begin
+		if rising_edge(clk) then
+			reg <= x;
+			y <= reg;
+		end if;
+	end process;
 end behavioral;
