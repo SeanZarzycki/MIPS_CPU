@@ -46,14 +46,14 @@ begin
 
 		port map(
 			taken => taken;
-			counter_sel => std_logic_vector(to_unsigned(pc xor global_history) mod num_counters);
+			counter_sel => std_logic_vector(to_unsigned(pc xor global_history(cpu_bits - 1 downto 0)) mod num_counters);
 			prediction => prediction
 		)
 	);
 
 	process(pc, taken)
 	begin
-		global_history <= taken & global_history(global_history_size - 2 downto 0);
+		global_history <= global_history(global_history_size - 1 downto 1) & taken;
 	end process;
 
 end beh;
