@@ -3,10 +3,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_arith.ALL;
 
 entity registers  is
-  port (CLK,RegWrite:in STD_LOGIC;
-       RR1,RR2,WR:in STD_LOGIC_VECTOR (4 downto 0); 
-       WD:in STD_LOGIC_VECTOR (31 downto 0);
-		   RD1,RD2:out STD_LOGIC_VECTOR (31 downto 0));
+  port (RR1, RR2, WR:in std_logic_vector(4 downto 0);
+       WD:in std_logic_vector(31 downto 0);
+       CLK, RegWrite:in std_logic;
+       RD1, RD2:out std_logic_vector(31 downto 0));
 end registers ;
 
 architecture Behavioral of registers  is

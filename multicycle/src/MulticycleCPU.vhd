@@ -76,7 +76,7 @@ architecture Behavioral of MulticycleCPU is
     port(
       RR1, RR2, WR: in std_logic_vector(4 downto 0);
       WD: in std_logic_vector(31 downto 0);
-      RegWrite: in std_logic;
+      CLK, RegWrite: in std_logic;
       RD1, RD2: out std_logic_vector(31 downto 0)
     );
   end component;
@@ -104,17 +104,17 @@ architecture Behavioral of MulticycleCPU is
     );
   end component;
 
-  component And2
+  component AND2
   	port(
-  		a, b: in std_logic;
-  		y: out std_logic
+  		x, y: in std_logic;
+  		z: out std_logic
   	);
   end component;
 
   component Or2 is
     port(
-      a, b: in std_logic;
-      y: out std_logic
+      x, y: in std_logic;
+      z: out std_logic
     );
   end component;
 
@@ -122,8 +122,8 @@ architecture Behavioral of MulticycleCPU is
 	generic(n : natural:=32);
 	port(a, b           : in  std_logic_vector(n-1 downto 0);
 		 Oper           : in  std_logic_vector(3 downto 0);
-		 Result         : buffer std_logic_vector(n-1 downto 0);
-		 Zero, CarryOut, Overflow : buffer std_logic);
+		 Result         : out std_logic_vector(n-1 downto 0);
+		 Zero, CarryOut, Overflow : out std_logic);
   end component;
 
 component ALUControl is
@@ -183,11 +183,11 @@ begin
   Mux32_run_2: Mux32 port map(F, J, MemtoReg, L);
   Mux32_run_3: Mux32 port map(E, P, ALUSrcA, S);
   
-  Registers_run: registers port map(Instruction(25 downto 21), Instruction(20 downto 16), K, L, RegWrite, M, N);
+  Registers_run: registers port map(Instruction(25 downto 21), Instruction(20 downto 16), K, L, clk, RegWrite, M, N);
   RegA_run: RegA port map(M, clk, P);
   RegA_run_2: RegA port map(N, clk, H);
   RegB_run: RegB port map(U, clk, F);
-  ALUOut_run: ALUOut port map(U,clk,F);
+
 
   SignExtend_run: SignExtend port map(Instruction(15 downto 0), Q);
   ShiftLeft2_run: ShiftLeft2 port map(Q, R);
@@ -195,9 +195,9 @@ begin
   MUX4Way_run: MUX4Way port map(H, X"00000004", Q, R, ALUSrcB, T);
 
   ShiftLeft2Jump_run: ShiftLeft2Jump port map(Instruction(25 downto 0), E(31 downto 28), V);
-  And2_run: And2 port map(Zero, PCWriteCond, W);
+  And2_run: AND2 port map(Zero, PCWriteCond, W);
   Or2_run: Or2 port map(W, PCWrite, D);
-  ALU_run: ALU port map(S, T, Operation, U, Zero, Carryout, Overflow);
+  ALU_run: ALU port map(S, T, Operation, U, Zero, carryout, Overflow);
   
   ALUControl_run: ALUControl port map(ALUOp, Instruction(5 downto 0), Operation);
   Control_run_all: MulticycleControl port map(Instruction(31 downto 26), clk, RegDst, RegWrite, ALUSrcA, IRWrite, MemtoReg, MemWrite, MemRead, IorD, PCWrite, PCWriteCond, ALUSrcB, ALUOp, PCSource);
