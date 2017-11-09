@@ -3,6 +3,22 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity execute is
 
+port (
+    lex : in std_logic_vector(31 downto 0);
+    cex : in std_logic_vector(31 downto 0);
+    dex : in std_logic_vector(31 downto 0);
+    eex : in std_logic_vector(5 downto 0);
+    rtex : in std_logic_vector(31 downto 0);
+    rdex : in std_logic_vector(31 downto 0);
+    bex : out std_logic_vector(31 downto 0);
+    mex : out std_logic_vector(31 downto 0);
+    gex : out std_logic_vector(31 downto 0);
+    zex : out std_logic_vector(31 downto 0);
+    
+    regDst, aluSrc : in std_logic;
+    aluOp : in std_logic_vector(1 downto 0)
+
+);
 
 end execute;
 
@@ -36,24 +52,27 @@ architecture beh of execute is
          sel : in std_logic;
          z	 : out std_logic_vector(31 downto 0));
     end component;
- 
+    
+    -- signals
+    signal F : std_logic_vector(31 downto 0);
+    signal operation : std_logic_vector(3 downto 0);
     begin
 
         PRIMARY_ALU : ALU port map(
-            a => C, b => F, oper => Operation, 
-            result => G, zero => Zero, overflow => overflow);
+            a => cex, b => , oper => Operation, 
+            result => gex, zero => zex, overflow => overflow);
 
         PC_ALU : ALU port map(
-            a => L, b => K, 
-            oper => "0010", result => M, 
+            a => Lex, b => K, 
+            oper => "0010", result => mex, 
             zero => open, overflow => open);
         
         ALU_CONTROL : ALUControl port map(
-            aluop => ALUOp, funct => Instruction(5 downto 0), operation => Operation);
+            aluop => ALUOp, funct => eex, operation => Operation);
         
         MAIN_SHIFTLEFT2 : ShiftLeft2 port map(
-            x => E, y => K);
+            x => Eex, y => K);
         
-        M_REG_SIGNEXTEND : MUX32 port map(x => D, y => E, sel => ALUSrc, z => F);
-        
+        M_REG_SIGNEXTEND : MUX32 port map(x => dex, y => eex, sel => ALUSrc, z => F);
+        M_RTEX_RDEX : MUX32 port map(x => rtex, y => rdex, sel => regdst, z => bex);
 end beh;

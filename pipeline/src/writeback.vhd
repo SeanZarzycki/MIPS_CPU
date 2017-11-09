@@ -2,7 +2,11 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity writeback is
-
+port (
+    hwb, gwb : in std_logic_vector(31 downto 0);
+    memtoreg : in std_logic;
+    j : out std_logic_vector(31 downto 0)
+);
 end writeback;
 
 architecture beh of writeback is
@@ -16,5 +20,7 @@ architecture beh of writeback is
     end component;
 
     begin
+
+    mux_0 : MUX32 port map (x => hwb, y => gwb, sel => memtoreg, z => j);
 
 end beh;

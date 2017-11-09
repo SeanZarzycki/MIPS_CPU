@@ -2,7 +2,14 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity mem is
+    port (
+        mmem : in std_logic_vector(31 downto 0);
+        memwrite, memread : in std_logic;
+        r : out std_logic;
+        bmem_in : in std_logic_vector(31 downto 0);
+        bmem_out : out std_logic_vector(31 downto 0)
 
+    );
 end mem;
 
 

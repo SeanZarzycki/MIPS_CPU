@@ -3,8 +3,14 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity decode is
     port (
+        clk : in std_logic;
         instruction : in std_logic_vector(31 downto 0);
-        pc_increment : in std_logic_vector(31 downto 0)
+        pc_increment : in std_logic_vector(31 downto 0);
+        regwrite : in std_logic;
+        cid, did : out std_logic_vector(31 downto 0);
+        eid : out std_logic_vector(31 downto 0);
+        rtid : out std_logic_vector(4 downto 0);
+        rdid : out std_logic_vector(4 downto 0)
 
     );
 
@@ -50,7 +56,7 @@ architecture beh of decode is
         MAIN_REGISTERS : registers port map(
             rr1 => Instruction(25 downto 21),
             rr2 => Instruction(20 downto 16),
-            wr => B, wd => J, clk => clk, regwrite => RegWrite, rd1 => C, rd2 => D);
+            wr => B, wd => J, clk => clk, regwrite => RegWrite, rd1 => cid, rd2 => did);
 
         MAIN_CONTROL : Control port map(
             opcode => Instruction(31 downto 26),regdst => RegDst,branch => Branch,

@@ -6,9 +6,9 @@ entity fetch is
 
     port (
         clk          : in std_logic;
-        AddressIn   : in std_logic_vector(31 downto 0);
-        instruction  : out std_logic_vector(31 downto 0);
-        pc_increment : out std_logic_vector(31 downto 0)
+        lif, iif : out std_logic_vector(31 downto 0);
+        pcsrc : in std_logic;
+        mmem : in std_logic_vector(31 downto 0)
     );
 end fetch;
 
@@ -27,19 +27,32 @@ architecture beh of fetch is
              AddressOut : out std_logic_vector(31 downto 0));
     end component;
 
+    component MUX32
+    port(x,y : in std_logic_vector (31 downto 0);
+         sel : in std_logic;
+         z	 : out std_logic_vector(31 downto 0));
+    end component;
+
     -- Signals --
     signal sig_AddressOut : std_logic_vector(31 downto 0);
-
+    signal sig_lif : std_logic_vector(31 downto 0);
+    signal A : std_logic_vector(31 downto 0);
+    signal p : std_logic_vector(31 downto 0);
 
     begin
 
 
         MAIN_PC : PC port map(clk => clk, AddressIn => p, AddressOut => a);
 
-        INSTR_MEM : instmemory port map(address => a, readdata => Instruction);
+        INSTR_MEM : instmemory port map(address => a, readdata => iif);
         PC_ACC : ALU port map(
-            a => A, b => PC_INCR, 
-            oper => "0010", result => L, 
+            a => A, b => 4, 
+            oper => "0010", result => sig_lif, 
             zero => open, overflow => open);
+
+        PC_SRC_MUX : MUX32 port map (
+            x => mmem, y => sig_lif, sel => pcsrc, z => p); 
+        );
+        lif <= sig_lif;
         
 end beh;

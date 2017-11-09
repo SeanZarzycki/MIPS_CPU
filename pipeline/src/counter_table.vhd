@@ -43,13 +43,10 @@ begin
 	begin
 		if rising_edge(clk) then
 			prev_taken_bus(to_integer(unsigned(counter_sel))) <= taken;
-			
+			prediction <= pred_bus(to_integer(unsigned(counter_sel)));
 		end if;
 	end process;
 
-	process (pred_bus)
-	begin
-		prediction <= pred_bus(to_integer(unsigned(counter_sel)));
-	end process;
+
 
 end beh;
