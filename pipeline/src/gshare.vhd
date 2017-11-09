@@ -5,15 +5,16 @@ use ieee.numeric_std.all;
 entity gshare is
 	generic (
 		cpu_bits : natural := 32;
-		num_counters : natural := 1024;
+		num_counters : natural := 2;
 		global_history_size : natural := 32;
-	    table_length : natural := 32; -- lg(1024)
+	    table_length : natural := 1; -- lg(num_counters)
 		bits_per_counter : natural := 2
 	);
 
 	port (
 		pc : in std_logic_vector(cpu_bits - 1 downto 0);
 		taken : in std_logic;
+		clk   : in std_logic;
 		prediction : out std_logic
 	);
 end gshare;
@@ -27,12 +28,13 @@ signal gshare_sel     : std_logic_vector(table_length - 1 downto 0);
 component counter_table is
 	generic (
 		num_counters : natural;
-	    table_length : natural; -- lg(1024)
+	    num_table_length_bits : natural;
 		bits_per_counter : natural
 	);
 
 	port (
 		taken : in std_logic;
+		clk   : in std_logic;
 		counter_sel : in std_logic_vector(table_length - 1 downto 0);
 		prediction : out std_logic
 	);
@@ -42,20 +44,27 @@ begin
     
 	ctr_table : counter_table
 		generic map(
-		    table_length => table_length,
+		    num_table_length_bits => table_length,
 			num_counters => num_counters,
 			bits_per_counter => bits_per_counter
 		)
 		port map(
 			taken => taken,
+			clk   => clk,
 			counter_sel => gshare_sel,
 			prediction => prediction
 		);
 
-	process(pc, taken)
+	process(taken, clk)
 	begin
-		global_history <= global_history(global_history_size - 1 downto 1) & taken;
-		gshare_sel <= std_logic_vector(unsigned(pc xor global_history(cpu_bits - 1 downto 0)));
+		if rising_edge(clk) then
+			global_history <= global_history(global_history_size - 2 downto 0) & taken;
+		end if;
+	end process;
+
+	process (global_history, pc)
+	begin
+		gshare_sel <= std_logic_vector(unsigned(pc(table_length - 1 downto 0) xor global_history(table_length - 1 downto 0)));
 	end process;
 
 end beh;
