@@ -5,7 +5,7 @@ entity ex_mem_reg is
 port (
     clk : in std_logic;
     zex : in std_logic;
-    memtoreg_in, regwrite_in, memwrite_in, memread_in, branch_in, zmem : in std_logic;
+    memtoreg_in, regwrite_in, memwrite_in, memread_in, branch_in zmem : in std_logic;
     memtoreg_out, regwrite_out, memwrite_out, memread_out, branch_out : out std_logic;
     gex, bex, mex, dex : in std_logic_vector(31 downto 0);
     mmem, bmem, gmem, dmem : out std_logic_vector(31 downto 0)

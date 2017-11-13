@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity mem_wb_reg is
 port (
-    regwrite_in, memtoreg_in : in std_logic;
+    regwrite_in, memtoreg_in, pcsrc_in : in std_logic;
     
     readdata, gmem, bmem : in std_logic_vector(31 downto 0);
     hwb : out std_logic_vector(31 downto 0);
@@ -17,7 +17,7 @@ end mem_wb_reg;
 architecture beh of mem_wb_reg is
 
 begin
-    process (clk, bmem, regwrite_in, memtoreg)
+    process (clk, bmem, regwrite_in, memtoreg_in, pcsrc_in)
     begin
         if rising_edge(clk) then
             bwb <= bmem;
