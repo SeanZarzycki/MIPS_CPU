@@ -2,32 +2,36 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity ex_mem_reg is
-port (
-    clk : in std_logic;
-    zex : in std_logic;
-    memtoreg_in, regwrite_in, memwrite_in, memread_in, branch_in, zmem : in std_logic;
-    memtoreg_out, regwrite_out, memwrite_out, memread_out, branch_out : out std_logic;
-    gex, bex, mex, dex : in std_logic_vector(31 downto 0);
-    mmem, bmem, gmem, dmem : out std_logic_vector(31 downto 0)
+port(clk:in std_logic;
+     WBCTRLIN:in std_logic_vector(1 downto 0);
+     MCTRLIN: in std_logic_vector(2 downto 0);
+     MIN:in std_logic_vector(31 downto 0);
+     ZIN:in std_logic;
+     GIN,DIN:in std_logic_vector(31 downto 0);
+     BIN:in std_logic_vector(4 downto 0);
+     WBCTRLOUT:out std_logic_vector(1 downto 0);
+     MCTRLOUT: out std_logic_vector(2 downto 0);
+     MOUT:out std_logic_vector(31 downto 0);
+     ZOUT:out std_logic;
+     GOUT,DOUT:out std_logic_vector(31 downto 0);
+     BOUT:out std_logic_vector(4 downto 0)
 );
+
 end ex_mem_reg;
 
 architecture beh of ex_mem_reg is
 
 begin
-    process(clk)
+    process (clk)
     begin
         if rising_edge(clk) then
-            bmem <= bex;
-            dmem <= dex;
-            mmem <= mex;
-            bmem <= bex;
-            memtoreg_out <= memtoreg_in;
-            regwrite_out <= regwrite_in;
-            memwrite_out <= memwrite_in;
-            branch_out <= branch_in;
-            memread_out <= memread_in;
-            zmem <= zex;
+            WBCTRLOUT <= WBCTRLIN;
+            MCTRLOUT <= MCTRLIN;
+            MOUT <= MIN;
+            ZOUT <= ZIN;
+            GOUT <= GIN;
+            DOUT <= DIN;
+            BOUT <= BIN;
         end if;
     end process;
-end beh;
+ end beh;
