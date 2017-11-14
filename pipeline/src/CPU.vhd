@@ -225,6 +225,7 @@ IF_ID : if_id_reg port map (
     LIF => LIF,
     IIF => IIF,
     LID => LID,
+    IID => IID,
     clk => clk
 );
 -- ID components
@@ -250,8 +251,8 @@ ID_EX : id_ex_reg port map (
     cex => cex,
     dex => dex,
     eid => eex,
-    rtid => rtid,
-    rdid => rdid,
+    rtid => iid(20 downto 16),
+    rdid => iid(15 downto 11),
     rtex => rtex,
     rdex => rdex,
     regwrite_in => regwrite_id_ex,

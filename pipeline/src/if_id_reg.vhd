@@ -17,7 +17,7 @@ begin
     begin
         if rising_edge(clk) then
             lid <= lif;
-            iid <= lif;
+            iid <= iif;
         end if;
     end process;
 end beh;
