@@ -26,4 +26,5 @@ begin
             regwrite_out <= regwrite_in;
             memtoreg_out <= memtoreg_in;
         end if;
+    end process;
 end beh;

@@ -9,14 +9,10 @@ architecture structural of CPU is
 signal a, c, d, e, f, g, h, j, k, l, m, n, p, q, Instruction : std_logic_vector(31 downto 0);
 signal Operation : std_logic_vector(3 downto 0);
 signal b : std_logic_vector(4 downto 0);
-signal r, Zero, RegDst, Jump, Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite : std_logic;
+signal r, Zero, Jump : std_logic;
 signal PC_INCR : std_logic_vector(31 downto 0) := X"00000004";
-signal ALUOp : std_logic_vector(1 downto 0);
-signal RegDst_id_ex, Branch_id_ex, MemRead_id_ex, 
-        MemtoReg_id_ex,MemWrite_id_ex,ALUSrc_id_ex,
-        RegWrite_id_ex, Jump_id_ex, ALUOp_id_ex,
-        memtoreg_ex_mem, memwrite_ex_mem, regwrite_ex_mem, branch_ex_mem, 
-        memtoreg_mem_wb, regwrite_mem_wb : std_logic;
+
+
 
 component control 
 port(Opcode:in std_logic_vector(5 downto 0);
@@ -129,8 +125,10 @@ component id_ex_reg is
         clk : in std_logic;
         lid, cid, did, eid : in std_logic_vector(31 downto 0);
         lex, cex, dex, eex : out std_logic_vector(31 downto 0);
-        aluSrc_in, aluOp_in, regdst_in, branch_in, memread_in, memwrite_in, jump_in  : in std_logic;
-        alusrc_out, aluop_out, regdst_out, branch_out, memread_out, memwrite_out, jump_out : out std_logic
+        aluop_in : std_logic_vector(1 downto 0);
+        regwrite_in, aluSrc_in, memtoreg_in, regdst_in, branch_in, memread_in, memwrite_in   : in std_logic;
+        aluop_out : std_logic_vector(1 downto 0);
+        regwrite_out, alusrc_out, memtoreg_out, regdst_out, branch_out, memread_out, memwrite_out : out std_logic
     );
 end component;
 
@@ -160,30 +158,42 @@ signal LID : std_logic_vector(31 downto 0);
 signal IID : std_logic_vector(31 downto 0);
 signal CID : std_logic_vector(31 downto 0);
 signal DID : std_logic_vector(31 downto 0);
-signal EID : std_logic_vector(31 downto 0);
-signal RTID : std_logic_vector(31 downto 0);
-signal RDID : std_logic_vector(31 downto 0);
+signal EID : std_logic_vector(5 downto 0);
+signal RTID : std_logic_vector(5 downto 0);
+signal RDID : std_logic_vector(5 downto 0);
+
+signal aluop_id_ex : std_logic_vector(1 downto 0);
+signal memtoreg_id_ex, regwrite_id_ex, 
+        branch_id_ex, memread_id_ex, memwrite_id_ex, 
+        regdst_id_ex, alusrc_id_ex : std_logic;
 -- out
 signal LEX : std_logic_vector(31 downto 0);
 signal CEX : std_logic_vector(31 downto 0);
 signal DEX : std_logic_vector(31 downto 0);
-signal EEX : std_logic_vector(31 downto 0);
-signal RTEX : std_logic_vector(31 downto 0);
-signal RDEX : std_logic_vector(31 downto 0);
+signal EEX : std_logic_vector(5 downto 0);
+signal RTEX : std_logic_vector(5 downto 0);
+signal RDEX : std_logic_vector(5 downto 0);
+
+signal aluop : std_logic_vector(1 downto 0);
+signal memtoreg_ex_mem, regwrite_ex_mem, 
+    branch_ex_mem, memread_ex_mem, memwrite_ex_mem, 
+    regdst,  alusrc : std_logic;
 -- EX/MEM
 -- in
 signal MEX : std_logic_vector(31 downto 0);
-signal ZEX : std_logic_vector(31 downto 0);
-signal QEX : std_logic_vector(31 downto 0);
+signal ZEX : std_logic;
+signal GEX : std_logic_vector(31 downto 0);
 signal BEX : std_logic_vector(31 downto 0);
 
 -- out
 signal MMEM : std_logic_vector(31 downto 0);
-signal ZMEM : std_logic_vector(31 downto 0);
-signal QMEM : std_logic_vector(31 downto 0);
+signal ZMEM : std_logic;
+signal GMEM : std_logic_vector(31 downto 0);
 signal DMEM : std_logic_vector(31 downto 0);
 signal BMEM : std_logic_vector(31 downto 0);
 
+signal memtoreg_mem_wb, regwrite_mem_wb, 
+    branch, memread, memwrite : std_logic;
 -- MEM/WB
 -- in
 signal ReadData : std_logic_vector(31 downto 0);
@@ -193,6 +203,9 @@ signal QWB      : std_logic_vector(31 downto 0);
 signal HWB : std_logic_vector(31 downto 0);
 signal GWB : std_logic_vector(31 downto 0);
 signal BWB : std_logic_vector(31 downto 0);
+
+signal memtoreg, regwrite : std_logic;
+
 begin
 
 -- IF components
@@ -200,7 +213,7 @@ MAIN_PC : PC port map(clk, p, a);
 INSTR_MEM : instmemory port map(a, IIF);
 PC_ACC : ALU port map(A, PC_INCR, "0010", LIF, open, open);
 
-M_PCSRC : MUX32 port map(LIF, MMEM, PCSrc, P);
+M_PCSRC : MUX32 port map(LIF, MMEM, R, P);
 
 IF_ID : if_id_reg port map ( 
     LIF => LIF,
@@ -217,12 +230,11 @@ MAIN_REGISTERS : registers port map(
 MAIN_CONTROL : Control port map(IID(31 downto 26),
 RegDst_id_ex, Branch_id_ex, MemRead_id_ex, 
 MemtoReg_id_ex,MemWrite_id_ex,ALUSrc_id_ex,
-RegWrite_id_ex, Jump_id_ex, ALUOp_id_ex);
+RegWrite_id_ex, jump,  ALUOp_id_ex);
 
 MAIN_SIGNEXTEND : signextend port map(iid(15 downto 0), Eid);
 
--- TODO:
--- finish this
+
 ID_EX : id_ex_reg port map ( 
     clk => clk,
     lid => lid,
@@ -231,7 +243,18 @@ ID_EX : id_ex_reg port map (
     lex => lex,
     cex => cex,
     dex => dex,
-    eex => eex,
+    eid => eex,
+    regwrite_in => regwrite_id_ex,
+    alusrc_in => alusrc_id_ex,
+    memtoreg_in => memtoreg_id_ex,
+    aluop_in => aluop_id_ex,
+    regdst_in => regdst_id_ex,
+    branch_in => branch_id_ex,
+    memread_in => memread_id_ex,
+    memwrite_in => memwrite_id_ex,
+    regdst_out => regdst, aluop_out => aluop, alusrc_out => alusrc,
+    branch_out => branch_ex_mem, memread_out => memread_ex_mem, memwrite_out => memwrite_ex_mem,
+    memtoreg_out => memtoreg_ex_mem, regwrite_out => regwrite_ex_mem
 );
 -- EX components
 

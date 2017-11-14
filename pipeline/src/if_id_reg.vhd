@@ -13,13 +13,11 @@ end if_id_reg;
 architecture beh of if_id_reg is
 
 begin
-    process (clk, bmem, regwrite_in, memtoreg)
+    process (clk)
     begin
         if rising_edge(clk) then
-            bwb <= bmem;
-            gwb <= gmem;
-            hwb <= readdata;
-            regwrite_out <= regwrite_in;
-            memtoreg_out <= memtoreg_in;
+            lid <= lif;
+            iid <= lif;
         end if;
+    end process;
 end beh;
