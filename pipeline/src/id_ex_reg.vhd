@@ -6,6 +6,8 @@ entity id_ex_reg is
         clk : in std_logic;
         lid, cid, did, eid : in std_logic_vector(31 downto 0);
         lex, cex, dex, eex : out std_logic_vector(31 downto 0);
+        rtid, rdid : in std_logic_vector(4 downto 0);
+        rtex, rdex : out std_logic_vector(4 downto 0);
         aluop_in : in std_logic_vector(1 downto 0);
         regwrite_in, aluSrc_in, memtoreg_in, regdst_in, branch_in, memread_in, memwrite_in   : in std_logic;
         aluop_out : out std_logic_vector(1 downto 0);
@@ -23,6 +25,8 @@ begin
             cex <= cid;
             dex <= did;
             eex <= eid;
+            rdex <= rdid;
+            rtex <= rtid;
             memtoreg_out <= memtoreg_in;
             regwrite_out <= regwrite_in;
             regdst_out <= regdst_in;

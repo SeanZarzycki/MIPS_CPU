@@ -110,39 +110,45 @@ component if_id_reg is
 
 
 component ex_mem_reg is
-    port (
+port (
     clk : in std_logic;
     zex : in std_logic;
-    memtoreg_in, regwrite_in, memwrite_in, memread_in, branch_in, zmem : in std_logic;
+    zmem : out std_logic;
+    memtoreg_in, regwrite_in, memwrite_in, memread_in, branch_in : in std_logic;
     memtoreg_out, regwrite_out, memwrite_out, memread_out, branch_out : out std_logic;
-    gex, bex, mex, dex : in std_logic_vector(31 downto 0);
-    mmem, bmem, gmem, dmem : out std_logic_vector(31 downto 0)
-    );
+    gex, mex, dex : in std_logic_vector(31 downto 0);
+    bex : in std_logic_vector(4 downto 0);
+    bmem : out std_logic_vector(4 downto 0);
+    mmem,  gmem, dmem : out std_logic_vector(31 downto 0)
+);
 end component;
 
 component id_ex_reg is
     port (
-        clk : in std_logic;
-        lid, cid, did, eid : in std_logic_vector(31 downto 0);
-        lex, cex, dex, eex : out std_logic_vector(31 downto 0);
-        aluop_in : std_logic_vector(1 downto 0);
-        regwrite_in, aluSrc_in, memtoreg_in, regdst_in, branch_in, memread_in, memwrite_in   : in std_logic;
-        aluop_out : std_logic_vector(1 downto 0);
-        regwrite_out, alusrc_out, memtoreg_out, regdst_out, branch_out, memread_out, memwrite_out : out std_logic
-    );
+    clk : in std_logic;
+    lid, cid, did, eid : in std_logic_vector(31 downto 0);
+    lex, cex, dex, eex : out std_logic_vector(31 downto 0);
+    rtid, rdid : in std_logic_vector(4 downto 0);
+    rtex, rdex : out std_logic_vector(4 downto 0);
+    aluop_in : in std_logic_vector(1 downto 0);
+    regwrite_in, aluSrc_in, memtoreg_in, regdst_in, branch_in, memread_in, memwrite_in   : in std_logic;
+    aluop_out : out std_logic_vector(1 downto 0);
+    regwrite_out, alusrc_out, memtoreg_out, regdst_out, branch_out, memread_out, memwrite_out : out std_logic
+);
 end component;
 
 
 component mem_wb_reg is
-    port (
-        regwrite_in, memtoreg_in : in std_logic;
-        readdata, gmem, bmem : in std_logic_vector(31 downto 0);
-        hwb : out std_logic_vector(31 downto 0);
-        gwb : out std_logic_vector(31 downto 0);
-        bwb : out std_logic_vector(31 downto 0);
-        regwrite_out, memtoreg_out : out std_logic;
-        clk : in std_logic
-    );
+port (
+    regwrite_in, memtoreg_in : in std_logic;
+    readdata, gmem : in std_logic_vector(31 downto 0);
+    bmem : in std_logic_vector(4 downto 0);
+    hwb : out std_logic_vector(31 downto 0);
+    gwb : out std_logic_vector(31 downto 0);
+    bwb : out std_logic_vector(4 downto 0);
+    regwrite_out, memtoreg_out : out std_logic;
+    clk : in std_logic
+);
 end component;
 
 
@@ -158,9 +164,9 @@ signal LID : std_logic_vector(31 downto 0);
 signal IID : std_logic_vector(31 downto 0);
 signal CID : std_logic_vector(31 downto 0);
 signal DID : std_logic_vector(31 downto 0);
-signal EID : std_logic_vector(5 downto 0);
-signal RTID : std_logic_vector(5 downto 0);
-signal RDID : std_logic_vector(5 downto 0);
+signal EID : std_logic_vector(31 downto 0);
+signal RTID : std_logic_vector(4 downto 0);
+signal RDID : std_logic_vector(4 downto 0);
 
 signal aluop_id_ex : std_logic_vector(1 downto 0);
 signal memtoreg_id_ex, regwrite_id_ex, 
@@ -170,9 +176,9 @@ signal memtoreg_id_ex, regwrite_id_ex,
 signal LEX : std_logic_vector(31 downto 0);
 signal CEX : std_logic_vector(31 downto 0);
 signal DEX : std_logic_vector(31 downto 0);
-signal EEX : std_logic_vector(5 downto 0);
-signal RTEX : std_logic_vector(5 downto 0);
-signal RDEX : std_logic_vector(5 downto 0);
+signal EEX : std_logic_vector(31 downto 0);
+signal RTEX : std_logic_vector(4 downto 0);
+signal RDEX : std_logic_vector(4 downto 0);
 
 signal aluop : std_logic_vector(1 downto 0);
 signal memtoreg_ex_mem, regwrite_ex_mem, 
@@ -183,14 +189,14 @@ signal memtoreg_ex_mem, regwrite_ex_mem,
 signal MEX : std_logic_vector(31 downto 0);
 signal ZEX : std_logic;
 signal GEX : std_logic_vector(31 downto 0);
-signal BEX : std_logic_vector(31 downto 0);
+signal BEX : std_logic_vector(4 downto 0);
 
 -- out
 signal MMEM : std_logic_vector(31 downto 0);
 signal ZMEM : std_logic;
 signal GMEM : std_logic_vector(31 downto 0);
 signal DMEM : std_logic_vector(31 downto 0);
-signal BMEM : std_logic_vector(31 downto 0);
+signal BMEM : std_logic_vector(4 downto 0);
 
 signal memtoreg_mem_wb, regwrite_mem_wb, 
     branch, memread, memwrite : std_logic;
@@ -202,7 +208,7 @@ signal QWB      : std_logic_vector(31 downto 0);
 -- out 
 signal HWB : std_logic_vector(31 downto 0);
 signal GWB : std_logic_vector(31 downto 0);
-signal BWB : std_logic_vector(31 downto 0);
+signal BWB : std_logic_vector(4 downto 0);
 
 signal memtoreg, regwrite : std_logic;
 
@@ -244,6 +250,10 @@ ID_EX : id_ex_reg port map (
     cex => cex,
     dex => dex,
     eid => eex,
+    rtid => rtid,
+    rdid => rdid,
+    rtex => rtex,
+    rdex => rdex,
     regwrite_in => regwrite_id_ex,
     alusrc_in => alusrc_id_ex,
     memtoreg_in => memtoreg_id_ex,
@@ -262,7 +272,7 @@ PRIMARY_ALU : ALU port map(Cex, F, Operation, Gex, Zex, overflow);
 PC_ALU : ALU port map(Lex, K, "0010", Mex, open, open);
 ALU_CONTROL : ALUControl port map(ALUOp, eex(5 downto 0), Operation);
 MAIN_SHIFTLEFT2 : ShiftLeft2 port map(Eex, K);
-M_WRITEREG : MUX5 port map(rtex(20 downto 16), rdex(15 downto 11), RegDst, Bex);
+M_WRITEREG : MUX5 port map(rtex, rdex, RegDst, Bex);
 M_REG_SIGNEXTEND : MUX32 port map(Dex, Eex, ALUSrc, F);
 -- MAIN_ShiFTLEFT2JUMP : ShiftLeft2Jump port map(Instruction(25 downto 0),L(31 downto 28), Q);
 
