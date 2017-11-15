@@ -44,35 +44,22 @@ if clk'event and clk='1' then
 --	i := conv_integer(Address);
 
 	if MemWrite = '1' then
-		w(i) <= WriteData(7 downto 0);
-		w(i+1) <= WriteData (15 downto 8);
-		w(i+2) <= WriteData (23 downto 16);
-		w(i+3) <= WriteData (31 downto 24);
+		w(i+3) <= WriteData(7 downto 0);
+		w(i+2) <= WriteData (15 downto 8);
+		w(i+1) <= WriteData (23 downto 16);
+		w(i) <= WriteData (31 downto 24);
 	end if;
 
 end if;
 	if MemRead = '1' then
-   ReadData(7 downto 0)<= w(i);
-   ReadData(15 downto 8)<= w(i+1);
-   ReadData(23 downto 16)<= w(i+2);
-   ReadData(31 downto 24)<= w(i+3);
+   ReadData(7 downto 0)<= w(i+3);
+   ReadData(15 downto 8)<= w(i+2);
+   ReadData(23 downto 16)<= w(i+1);
+   ReadData(31 downto 24)<= w(i);
       --ReadData <= z;
 	 end if;
-   -- if MemRead = '1' then
-      -- ReadData(7 downto 0)<= w(i);
-      -- ReadData(15 downto 8)<= w(i+1);
-      -- ReadData(23 downto 16)<= w(i+2);
-      -- ReadData(31 downto 24)<= w(i+3);
-   -- end if;
+
 end process;
 
--- process(memread)
--- begin
-   -- if MemRead = '1' then
-      -- ReadData(7 downto 0)<= w(i);
-      -- ReadData(15 downto 8)<= w(i+1);
-      -- ReadData(23 downto 16)<= w(i+2);
-      -- ReadData(31 downto 24)<= w(i+3);
-   -- end if;
--- end process;
+
 end struc;

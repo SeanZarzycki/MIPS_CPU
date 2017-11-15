@@ -6,7 +6,7 @@ port(clk:in std_logic; Overflow:out std_logic);
 end CPU;
 
 architecture structural of CPU is
-signal a, c, d, e, f, g, h, j, k, l, m, n, p, q, Instruction : std_logic_vector(31 downto 0);
+signal a, c, d, e, f, g, h, j, k, l, m, n, p, npc, q, Instruction : std_logic_vector(31 downto 0);
 signal Operation : std_logic_vector(3 downto 0);
 signal b : std_logic_vector(4 downto 0);
 signal r, Zero, Jump : std_logic;
@@ -155,6 +155,7 @@ end component;
 -- Pipeline register signals
 
 -- IF/ID
+signal jump_address : std_logic_vector(31 downto 0);
 signal LIF : std_logic_vector(31 downto 0);
 signal IIF : std_logic_vector(31 downto 0);
 
@@ -193,6 +194,7 @@ signal BEX : std_logic_vector(4 downto 0);
 
 -- out
 signal MMEM : std_logic_vector(31 downto 0);
+signal HMEM : std_logic_vector(31 downto 0);
 signal ZMEM : std_logic;
 signal GMEM : std_logic_vector(31 downto 0);
 signal DMEM : std_logic_vector(31 downto 0);
@@ -202,7 +204,7 @@ signal memtoreg_mem_wb, regwrite_mem_wb,
     branch, memread, memwrite : std_logic;
 -- MEM/WB
 -- in
-signal ReadData : std_logic_vector(31 downto 0);
+
 signal QWB      : std_logic_vector(31 downto 0);
 
 -- out 
@@ -215,12 +217,12 @@ signal memtoreg, regwrite : std_logic;
 begin
 
 -- IF components
-MAIN_PC : PC port map(clk, p, a);
+MAIN_PC : PC port map(clk, npc, a);
 INSTR_MEM : instmemory port map(a, IIF);
 PC_ACC : ALU port map(A, PC_INCR, "0010", LIF, open, open);
 
 M_PCSRC : MUX32 port map(LIF, MMEM, R, P);
-
+M_JUMP  : MUX32 port map(P, jump_address, jump, npc);
 IF_ID : if_id_reg port map ( 
     LIF => LIF,
     IIF => IIF,
@@ -241,6 +243,11 @@ RegWrite_id_ex, jump,  ALUOp_id_ex);
 
 MAIN_SIGNEXTEND : signextend port map(iid(15 downto 0), Eid);
 
+SLL2JUMP : shiftleft2jump port map (
+    x => iid(25 downto 0),
+    y => lid(31 downto 28),
+    z => jump_address
+);
 
 ID_EX : id_ex_reg port map ( 
     clk => clk,
@@ -250,7 +257,8 @@ ID_EX : id_ex_reg port map (
     lex => lex,
     cex => cex,
     dex => dex,
-    eid => eex,
+    eid => eid,
+    eex => eex,
     rtid => iid(20 downto 16),
     rdid => iid(15 downto 11),
     rtex => rtex,
@@ -289,13 +297,16 @@ EX_MEM : ex_mem_reg port map (
 );
 -- MEM components
 
-DATA_MEM : DataMemory port map(Dmem, Gmem, clk, MemRead, MemWrite, H);
+DATA_MEM : DataMemory port map(
+    writedata => Dmem, 
+    address => Gmem, 
+    clk => clk, memread => MemRead, memwrite => MemWrite, readdata => HMEM);
 BRANCH_AND : AND2 port map(Branch, zmem, R);
 
 MEM_WB : mem_wb_reg port map ( 
     clk => clk,
     regwrite_in => regwrite_mem_wb, memtoreg_in => memtoreg_mem_wb,
-    readdata => H, gmem => gmem, bmem => bmem,
+    readdata => HMEM, gmem => gmem, bmem => bmem,
     hwb => hwb, gwb => gwb, bwb => bwb, 
     regwrite_out => regwrite, memtoreg_out => memtoreg
 );

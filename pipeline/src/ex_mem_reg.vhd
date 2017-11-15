@@ -24,6 +24,7 @@ begin
             bmem <= bex;
             dmem <= dex;
             mmem <= mex;
+            gmem <= gex;
             memtoreg_out <= memtoreg_in;
             regwrite_out <= regwrite_in;
             memwrite_out <= memwrite_in;
