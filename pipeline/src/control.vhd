@@ -46,12 +46,19 @@ begin
 				sw <= '0';
 				beq <= '1';
 				jum <= '0';
-		when others =>
+		when "000010" =>
 				RFormat <= '0';
 				lw <= '0';
 				sw <= '0';
 				beq <= '0';
 				jum <= '1';
+		when others =>
+				RFormat <= '0';
+				lw <= '0';
+				sw <= '0';
+				beq <= '0';
+				jum <= '0';
+
 
 	end case; 
 

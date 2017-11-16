@@ -51,8 +51,8 @@ begin
       
       if rising_edge(clk) then
          if RegWrite = '1' then
-            if s_WR /= 0 then
-               RF(s_WR) <= WD;
+            if to_integer(unsigned(WR)) /= 0 then
+               RF(to_integer(unsigned(WR))) <= WD;
             end if;
          end if;
 
