@@ -237,7 +237,6 @@ MAIN_REGISTERS : registers port map(
     wr => bwb, wd => J, clk => clk, regwrite => RegWrite, rd1 => CID, rd2 => DID
 );
 
-BRANCH_ALU : ALU port map(LID, CID, "0010", Mex, open, open);
 MAIN_CONTROL : Control port map(IID(31 downto 26),
 RegDst_id_ex, Branch_id_ex, MemRead_id_ex, 
 MemtoReg_id_ex,MemWrite_id_ex,ALUSrc_id_ex,
