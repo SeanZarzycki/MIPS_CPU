@@ -162,53 +162,47 @@ begin
 
 
 -- Code 4
--- -- beq $t1,$t2,L  -- CHECK THIS BRANCH
--- mem(0) <= x"11";
--- mem(1) <= x"2a";
--- mem(2) <= x"00";
--- mem(3) <= x"10";
+-- beq $t1,$t2,L  -- CHECK THIS BRANCH
+mem(0) <= x"11";
+mem(1) <= x"2a";
+mem(2) <= x"00";
+mem(3) <= x"05";
 
--- -- nop
--- mem(4) <= x"00";
--- mem(5) <= x"00";
--- mem(6) <= x"00";
--- mem(7) <= x"00";
+-- nop
+mem(4) <= x"00";
+mem(5) <= x"00";
+mem(6) <= x"00";
+mem(7) <= x"00";
 
--- -- nop
--- mem(4) <= x"00";
--- mem(5) <= x"00";
--- mem(6) <= x"00";
--- mem(7) <= x"00";
+-- add $t3,$s4,$s5
+mem(8) <= x"02";
+mem(9) <= x"95";
+mem(10) <= x"58";
+mem(11) <= x"20";
 
--- -- add $t3,$s4,$s5
--- mem(8) <= x"02";
--- mem(9) <= x"95";
--- mem(10) <= x"58";
--- mem(11) <= x"20";
+-- j exit  -- CHECK THIS BRANCH
+mem(12) <= x"08";
+mem(13) <= x"00";
+mem(14) <= x"00";
+mem(15) <= x"06";
 
--- -- j exit  -- CHECK THIS BRANCH
--- mem(12) <= x"08";
--- mem(13) <= x"00";
--- mem(14) <= x"00";
--- mem(15) <= x"01";
+-- nop
+mem(16) <= x"00";
+mem(17) <= x"00";
+mem(18) <= x"00";
+mem(19) <= x"00";
 
--- -- nop
--- mem(16) <= x"00";
--- mem(17) <= x"00";
--- mem(18) <= x"00";
--- mem(19) <= x"00";
+-- L sub $t4,$s4,$s5
+mem(20) <= x"02";
+mem(21) <= x"95";
+mem(22) <= x"60";
+mem(23) <= x"22";
 
--- -- L sub $t4,$s4,$s5
--- mem(20) <= x"02";
--- mem(21) <= x"95";
--- mem(22) <= x"60";
--- mem(23) <= x"22";
-
--- -- exit: add $t5,$s4,$s4
--- mem(24) <= x"02";
--- mem(25) <= x"94";
--- mem(26) <= x"68";
--- mem(27) <= x"20";
+-- exit: add $t5,$s4,$s4
+mem(24) <= x"02";
+mem(25) <= x"94";
+mem(26) <= x"68";
+mem(27) <= x"20";
 
 -- -- Code 5
 -- -- beq $t1,$t2,L  -- CHECK THIS BRANCH
@@ -265,54 +259,54 @@ begin
 -- mem(34) <= x"68";
 -- mem(35) <= x"20";
 
--- Code 6
--- beq $t1,$t2,L  -- CHECK THIS BRANCH
-mem(0) <= x"11";
-mem(1) <= x"2a";
-mem(2) <= x"00";
-mem(3) <= x"10";
+-- -- Code 6
+-- -- beq $t1,$t2,L  -- CHECK THIS BRANCH
+-- mem(0) <= x"11";
+-- mem(1) <= x"2a";
+-- mem(2) <= x"00";
+-- mem(3) <= x"10";
 
--- nop
-mem(4) <= x"00";
-mem(5) <= x"00";
-mem(6) <= x"00";
-mem(7) <= x"00";
+-- -- nop
+-- mem(4) <= x"00";
+-- mem(5) <= x"00";
+-- mem(6) <= x"00";
+-- mem(7) <= x"00";
 
--- nop
-mem(8) <= x"00";
-mem(9) <= x"00";
-mem(10) <= x"00";
-mem(11) <= x"00";
+-- -- nop
+-- mem(8) <= x"00";
+-- mem(9) <= x"00";
+-- mem(10) <= x"00";
+-- mem(11) <= x"00";
 
--- add $t3,$s4,$s5
-mem(12) <= x"02";
-mem(13) <= x"95";
-mem(14) <= x"58";
-mem(15) <= x"20";
+-- -- add $t3,$s4,$s5
+-- mem(12) <= x"02";
+-- mem(13) <= x"95";
+-- mem(14) <= x"58";
+-- mem(15) <= x"20";
 
--- j exit  -- CHECK THIS BRANCH
-mem(16) <= x"08";
-mem(17) <= x"00";
-mem(18) <= x"00";
-mem(19) <= x"01";
+-- -- j exit  -- CHECK THIS BRANCH
+-- mem(16) <= x"08";
+-- mem(17) <= x"00";
+-- mem(18) <= x"00";
+-- mem(19) <= x"01";
 
--- nop
-mem(20) <= x"00";
-mem(21) <= x"00";
-mem(22) <= x"00";
-mem(23) <= x"00";
+-- -- nop
+-- mem(20) <= x"00";
+-- mem(21) <= x"00";
+-- mem(22) <= x"00";
+-- mem(23) <= x"00";
 
--- L sub $t4,$s4,$s5
-mem(24) <= x"02";
-mem(25) <= x"95";
-mem(26) <= x"60";
-mem(27) <= x"22";
+-- -- L sub $t4,$s4,$s5
+-- mem(24) <= x"02";
+-- mem(25) <= x"95";
+-- mem(26) <= x"60";
+-- mem(27) <= x"22";
 
--- exit: add $t5,$s4,$s4
-mem(28) <= x"02";
-mem(29) <= x"94";
-mem(30) <= x"68";
-mem(31) <= x"20";
+-- -- exit: add $t5,$s4,$s4
+-- mem(28) <= x"02";
+-- mem(29) <= x"94";
+-- mem(30) <= x"68";
+-- mem(31) <= x"20";
 
 process(Address)
 begin

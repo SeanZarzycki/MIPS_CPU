@@ -60,6 +60,7 @@ begin
       end if;     
       
    end process;
+   
             RD1 <= RF(s_RR1);
             RD2 <= RF(s_RR2);
 
